@@ -4,7 +4,7 @@ export const handler = [
   rest.post("/login", async (req, res, ctx) => {
     const { id, pw } = req.body;
 
-    if (id === "1" && pw === "2") {
+    if (id === "1" && pw === "12345678") {
       return res(
         ctx.json({
           result: true,
