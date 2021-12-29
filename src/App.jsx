@@ -1,7 +1,9 @@
 import React from "react";
+import Login from "./components/Login";
+import Mocking from "./components/Mocking";
 
 export const App = () => {
-  return <div>React</div>;
+  return <Login />;
 };
 
 export default App;
