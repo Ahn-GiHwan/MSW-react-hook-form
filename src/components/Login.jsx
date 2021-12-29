@@ -1,39 +1,49 @@
 import axios from "axios";
-import React, { useEffect, useRef } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Button, Form } from "reactstrap";
+import ErroText from "./ErroText";
 
 const Login = () => {
-  const idRef = useRef(null);
-  const pwRef = useRef(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  useEffect(() => {
-    idRef.current.focus();
-  });
-
-  const fetchLogin = async (e) => {
-    const id = idRef.current.value;
-    const pw = pwRef.current.value;
-    e.preventDefault();
-    if (!id) {
-      alert("id!!");
-      idRef.current.focus();
-    } else if (!pw) {
-      alert("pw!!");
-      pwRef.current.focus();
-    } else {
-      const { data } = await axios.post("/login", { id, pw });
-      if (data.result) alert(data.text);
-      else alert(data.text);
-    }
+  const fetchLogin = async (info) => {
+    const { data } = await axios.post("/login", info);
+    if (data.result) alert(data.text);
+    else alert(data.text);
   };
+
   return (
-    <form onSubmit={fetchLogin}>
-      <label for="id">ID</label>
-      <input id="id" ref={idRef} />
+    <Form onSubmit={handleSubmit(fetchLogin)}>
+      <label for="id">id</label>
+      <input
+        type="text"
+        id="id"
+        name="id"
+        innerRef="id"
+        {...register("id", { required: true })}
+      />
+      {errors.id?.type === "required" && <ErroText name="id" type="required" />}
       <br />
-      <label for="pw">PW</label>
-      <input id="pw" type="password" ref={pwRef} />
-      <button type="submit">click</button>
-    </form>
+      <label for="pw">pw</label>
+      <input
+        type="password"
+        id="pw"
+        {...register("pw", { required: true, minLength: 8 })}
+      />
+      {errors.pw?.type === "required" && <ErroText name="pw" type="required" />}
+      {errors.pw?.type === "minLength" && (
+        <ErroText name="pw" type="minLength" valid={8} />
+      )}
+      <br />
+      <Button color="primary" size="sm" block type="submit">
+        click
+      </Button>
+    </Form>
   );
 };
 
